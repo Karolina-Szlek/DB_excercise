@@ -1,0 +1,64 @@
+-- Karolina Szlęk, grupa MPY
+
+-- Zadanie 1
+
+(SELECT id, displayname, reputation, count  
+FROM (SELECT owneruserid, COUNT(*) 
+FROM (SELECT owneruserid, postid 
+FROM (SELECT postid FROM public.postlinks
+	WHERE linktypeid = 3) X
+JOIN posts ON(X.postid = posts.id)) as A GROUP BY 1) as Y
+JOIN users ON (Y.owneruserid = users.id))
+ORDER BY 4 DESC, displayname;
+
+
+-- Zadanie 2
+
+SELECT u.id, u.displayname, u.reputation, COUNT(c.postid) AS commentsCount, AVG(c.score) AS averagePostsScore
+FROM users u
+	JOIN badges b ON u.id = b.userid
+    LEFT JOIN posts p ON u.id = p.owneruserid 
+    LEFT JOIN comments c ON p.id = c.postid
+WHERE b.name LIKE 'Fanatic'
+GROUP BY u.id, u.displayname, u.reputation
+HAVING COUNT(c.postid) < 101
+ORDER BY 4 DESC, 2 ASC
+LIMIT 20;
+
+
+-- Zadanie 3
+
+--Spraw aby atrybut id tabeli users był jej kluczem głównym
+ALTER TABLE users ADD CONSTRAINT pk_id PRIMARY KEY(id);
+--Dodaj klucz obcy, który...wymusi aby w tabeli badges wszystkie niepuste wartości userid występowały jako id w tabeli users
+ALTER TABLE badges ADD CONSTRAINT fk_userid FOREIGN KEY(userid);
+--Usuń kolumnę viewcount tabeli posts
+ALTER TABLE posts DROP COLUMN viewcount;
+--Usuń wszystkie krotki z tabeli posts takie, że ich body jest pustym napisem lub nullem.
+DELETE FROM posts WHERE body IS NULL OR body like '';
+
+
+ALTER TABLE users 
+ADD CONSTRAINT id PRIMARY KEY(id);
+ALTER TABLE badges
+ADD CONSTRAINT userid FOREIGN KEY(userid)
+REFERENCES users(id);
+ALTER TABLE posts
+DROP COLUMN viewcount;
+DELETE FROM posts 
+WHERE posts.body IS NULL OR posts.body like '';
+
+
+-- Zadanie 4
+
+CREATE SEQUENCE posts_id_seq;
+SELECT setval('posts_id_seq', MAX(id)) 
+FROM posts;
+ALTER TABLE posts 
+ALTER COLUMN id SET DEFAULT nextval('posts_id_seq');
+ALTER SEQUENCE posts_id_seq OWNED BY posts.id;
+INSERT INTO posts (posttypeid, parentid, owneruserid, body, score, creationdate)
+SELECT 3, c.postid, c.userid, c.text, c.score, c.creationdate
+FROM comments c;
+
+

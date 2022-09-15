@@ -1,0 +1,144 @@
+INRO o BAZIE
+
+1.)
+Czyli mamy takie TABELE:
+-badges
+-posthistory
+-postlinks
+-posts
+-tags
+-users
+-votes
+
+2.) TABELE mają takie kolumny
+
+
+badges (
+    id,
+    userid,
+    class,
+    name,
+    date,
+    tagbased)
+
+-
+---
+--
+
+posthistory (
+    id,
+    posthistorytypeid,
+    postid,
+    revisionguid,
+    creationdate,
+    userid,
+    userdisplayname,
+    comment,
+    text)
+
+
+--
+---
+--
+
+postlinks (
+    id,
+    creationdate,
+    postid,
+    relatedpostid,
+    postlinktypeid,
+    linktypeid)
+
+
+--
+---
+--
+
+posts (
+    id,
+    posttypeid,
+    parentid,
+    acceptedanswerid,
+    creationdate,
+    score,
+    viewcount,
+    body,
+    owneruserid,
+    ownerdisplayname,
+    lasteditoruserid,
+    lasteditordisplayname,
+    lasteditdate,
+    lastactivitydate,
+    communityowneddate,
+    title,
+    tags,
+    answercount,
+    commentcount,
+    favoritecount,
+    closeddate)
+
+
+--
+---
+--
+
+tags (
+    id,
+    tagname,
+    count,
+    excerptpostid,
+    wikipostid)
+
+
+--
+---
+--
+
+users (
+    id,
+    reputation,
+    creationdate,
+    displayname,
+    lastaccessdate,
+    websiteurl,
+    location,
+    age,
+    aboutme,
+    views,
+    upvotes,
+    downvotes,
+    accountid,
+    profileimageurl)
+
+
+--
+---
+--
+
+votes (
+    id,
+    postid,
+    userid,
+    votetypeid,
+    creationdate,
+    bountyamount)
+
+
+--
+-- Data for Name: badges; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+
+Dane do Postlinks i badges bierzemy z tych ------>
+
+COPY public.postlinks (id, creationdate, postid, relatedpostid, postlinktypeid, linktypeid)
+COPY public.badges (id, userid, class, name, date, tagbased) FROM stdin;
+
+
+
+
+
+
+
+
+
